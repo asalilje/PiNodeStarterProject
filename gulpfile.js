@@ -4,10 +4,10 @@ const gulp = require('gulp');
 const Deployment = require("./deployment.js");
 
 const Deploy = new Deployment({
-    hostName: '192.168.1.97',
+    hostName: 'pi-ipnumber',
     projectName: 'PiNodeStarterProject',
-    user: 'pi',
-    password: 'raspberry',
+    user: 'pi-user',
+    password: 'pi-password',
     files: ['app.js','package.json'],
     startFile: 'app.js '
 });
