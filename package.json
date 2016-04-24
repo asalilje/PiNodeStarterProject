@@ -1,0 +1,22 @@
+{
+  "name": "PiNodeStarterProject",
+  "version": "1.0.0",
+  "description": "A starter project to get a pi node app up and running",
+  "main": "app.js",
+  "author": "Åsa Liljegren",
+  "license": "ISC",
+  "scripts": {
+    "deploy": "gulp deploy",
+    "app": "gulp run",
+    "modules": "gulp modules",
+    "stop": "gulp stop"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "q": "^1.4.1",
+    "ssh2": "^0.5.0"
+  },
+  "dependencies": {
+    "onoff": "^1.0.4"
+  }
+}
