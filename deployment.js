@@ -122,7 +122,7 @@ class Deployment {
         return Q.promise(function () {
             return this.initialized.promise
                 .then(function () {
-                    return this.executeRemote('kill -9 `ps | grep "' + this.root + '/' + this.startFile + '" | grep -v grep | awk \' { print $1 }\'`');
+                    return this.executeRemote('killall node');
                 }.bind(this))
                 .then(function() {
                     console.log("Done!");
