@@ -31,7 +31,7 @@ class Deployment {
                         deferred.resolve();
                     })
                     .on('data', function (data) {
-                        console.log(data);
+                        console.log(data.toString('utf-8'));
                     })
                     .stderr.on('data', function (err) {
                     deferred.reject('Error executing command [' + command + '] with error [' + err + ']');
