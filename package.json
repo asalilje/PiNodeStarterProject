@@ -6,8 +6,9 @@
   "author": "Åsa Liljegren",
   "license": "ISC",
   "scripts": {
+    "fullDeploy": "node deployer.js fullDeploy",
     "deploy": "node deployer.js deploy",
-    "app": "node deployer.js run",
+    "app": "node deployer.js start",
     "modules": "node deployer.js modules",
     "stop": "node deployer.js stop"
   },

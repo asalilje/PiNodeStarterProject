@@ -64,7 +64,7 @@ class Deployment {
     const task = "deploy";
     console.log("\nStarting " + task);
 
-    this.executeRemote("mkdir -p " + this.root)
+    return this.executeRemote("mkdir -p " + this.root)
       .then(() => {
         return this.executeLocal(
           "scp " +
@@ -99,12 +99,39 @@ class Deployment {
       });
   }
 
-  run() {
+  fullDeploy() {
+    this.deployProject()
+      .then(() => {
+        return restoreModules();
+      })
+      .then(() => {
+        return this.stop();
+      })
+      .then(() => {
+        return this.start();
+      });
+  }
+
+  start() {
     const task = "starting app";
     console.log("\nStarting " + task);
 
     return this.executeRemote(
-      "/usr/local/bin/node " + this.root + "/" + this.startFile
+      "pm2 start " + this.root + "/" + this.startFile + " --watch"
+    )
+      .then(() => {
+        console.log("Done!");
+      })
+      .catch(err => {
+        console.log("Error in " + task + ": " + err);
+      });
+  }
+
+  setupEnvironment() {
+    const task = "installing nodejs 12.x and PM2";
+    console.log("\nStarting " + task);
+    return this.executeRemote(
+      "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -;sudo apt install -y nodejs;sudo npm install pm2 -g"
     )
       .then(() => {
         console.log("Done!");
@@ -118,7 +145,7 @@ class Deployment {
     const task = "stopping app";
     console.log("\nStarting " + task);
 
-    return this.executeRemote("killall node")
+    return this.executeRemote("pm2 stop all")
       .then(function() {
         console.log("Done!");
       })

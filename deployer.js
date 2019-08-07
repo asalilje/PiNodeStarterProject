@@ -15,8 +15,11 @@ switch (arg) {
   case "deploy":
     Deploy.deployProject();
     break;
-  case "run":
-    Deploy.run();
+  case "fullDeploy":
+    Deploy.fullDeploy();
+    break;
+  case "start":
+    Deploy.start();
     break;
   case "modules":
     Deploy.restoreModules();
