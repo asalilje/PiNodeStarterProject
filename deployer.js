@@ -12,8 +12,8 @@ const Deploy = new Deployment({
 var arg = process.argv.slice(2)[0];
 
 switch (arg) {
-  case "deploy":
-    Deploy.deployProject();
+  case "upload":
+    Deploy.uploadFile();
     break;
   case "fullDeploy":
     Deploy.fullDeploy();
@@ -21,11 +21,20 @@ switch (arg) {
   case "start":
     Deploy.start();
     break;
+  case "logs":
+    Deploy.logs();
+    break;
+  case "run":
+    Deploy.run();
+    break;
   case "modules":
     Deploy.restoreModules();
     break;
   case "stop":
     Deploy.stop();
+    break;
+  case "setup":
+    Deploy.setupEnvironment();
     break;
   default:
     console.log("Command doesn't exists.");

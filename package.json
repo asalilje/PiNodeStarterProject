@@ -7,13 +7,15 @@
   "license": "ISC",
   "scripts": {
     "fullDeploy": "node deployer.js fullDeploy",
-    "deploy": "node deployer.js deploy",
-    "app": "node deployer.js start",
+    "upload": "node deployer.js upload",
+    "start": "node deployer.js start",
     "modules": "node deployer.js modules",
-    "stop": "node deployer.js stop"
+    "stop": "node deployer.js stop",
+    "setup": "node deployer.js setup"
   },
   "devDependencies": {
-    "ssh2": "^0.5.0"
+    "ssh2": "^0.5.0",
+    "ssh2-sftp-client": "^2.5.0"
   },
   "dependencies": {
     "onoff": "^1.0.4"

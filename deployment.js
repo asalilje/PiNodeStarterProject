@@ -1,7 +1,8 @@
 "use strict";
 
-var ssh2Client = require("ssh2").Client;
-var exec = require("child_process").exec;
+const ssh2Client = require("ssh2").Client;
+const exec = require("child_process").exec;
+const sftpClient = require("ssh2-sftp-client");
 
 class Deployment {
   constructor(config) {
@@ -49,40 +50,29 @@ class Deployment {
     });
   }
 
-  executeLocal(command) {
-    return new Promise((resolve, reject) => {
-      exec(command, function(err, stdout, stderr) {
-        if (stdout) console.log(stdout);
-        if (stderr) console.log(stderr);
-        if (!err) resolve();
-        else reject(err);
-      });
-    });
-  }
-
-  deployProject() {
-    const task = "deploy";
-    console.log("\nStarting " + task);
-
-    return this.executeRemote("mkdir -p " + this.root)
-      .then(() => {
-        return this.executeLocal(
-          "scp " +
-            this.files.join(" ") +
-            " " +
-            this.user +
-            "@" +
-            this.hostName +
-            ":" +
-            this.root
-        );
+  uploadFile() {
+    const sftp = new sftpClient();
+    sftp
+      .connect({
+        host: this.hostName,
+        port: 22,
+        username: this.user,
+        password: this.password
       })
       .then(() => {
-        console.log("Done!");
-        resolve();
+        const uploads = this.files.map(file => {
+          return sftp.put(file, this.root + "/" + file);
+        });
+
+        return Promise.all(uploads);
+      })
+      .then(data => {
+        console.log(data);
+        sftp.end();
       })
       .catch(err => {
-        console.log("Error in " + task + ": " + err);
+        console.log(err, "catch error");
+        sftp.end();
       });
   }
 
@@ -90,7 +80,9 @@ class Deployment {
     const task = "restore modules";
     console.log("\nStarting " + task);
 
-    return this.executeRemote("cd " + this.root + ";sudo npm install")
+    return this.executeRemote(
+      "cd " + this.root + ";sudo npm install --production --unsafe-perm=true"
+    )
       .then(() => {
         console.log("Done!");
       })
@@ -102,7 +94,7 @@ class Deployment {
   fullDeploy() {
     this.deployProject()
       .then(() => {
-        return restoreModules();
+        return this.restoreModules();
       })
       .then(() => {
         return this.stop();
@@ -112,13 +104,45 @@ class Deployment {
       });
   }
 
+  run() {
+    const task = "starting app";
+    console.log("\nStarting " + task);
+
+    return this.executeRemote(
+      "pm2 start " +
+        this.root +
+        "/" +
+        this.startFile +
+        " --no-autorestart; pm2 logs"
+    )
+      .then(() => {
+        console.log("Done!");
+      })
+      .catch(err => {
+        console.log("Error in " + task + ": " + err);
+      });
+  }
+
   start() {
     const task = "starting app";
     console.log("\nStarting " + task);
 
     return this.executeRemote(
-      "pm2 start " + this.root + "/" + this.startFile + " --watch"
+      "pm2 start " + this.root + "/" + this.startFile + " --watch;"
     )
+      .then(() => {
+        console.log("Done!");
+      })
+      .catch(err => {
+        console.log("Error in " + task + ": " + err);
+      });
+  }
+
+  logs() {
+    const task = "starting app";
+    console.log("\nStarting " + task);
+
+    return this.executeRemote("pm2 logs")
       .then(() => {
         console.log("Done!");
       })
@@ -131,7 +155,7 @@ class Deployment {
     const task = "installing nodejs 12.x and PM2";
     console.log("\nStarting " + task);
     return this.executeRemote(
-      "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -;sudo apt install -y nodejs;sudo npm install pm2 -g"
+      "sudo apt update -y;sudo apt install -y nodejs npm;sudo npm install pm2 -g"
     )
       .then(() => {
         console.log("Done!");
