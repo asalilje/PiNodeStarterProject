@@ -3,14 +3,19 @@
 A project for running node on Raspberry Pi via SSH. Should, but not tested, work on windows, osx and linux.
 
 ## Preprare your PI
+Install your favioure version of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/). Connect your Pi to your network and enable ssh.
 
-Enabled SHH
-Write down IP
-Setup password
+Write down your ip adress to use in deployer.js. You can use this command.
+```bash
+$ ifconfig
+```
 
 ## Commands
 
-npm run
+You can run commands via npm.
+```bash
+$ npm run [command]
+```
 
 ### upload
 
