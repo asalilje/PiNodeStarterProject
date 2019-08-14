@@ -6,15 +6,16 @@
   "author": "Åsa Liljegren",
   "license": "ISC",
   "scripts": {
-    "deploy": "gulp deploy",
-    "app": "gulp run",
-    "modules": "gulp modules",
-    "stop": "gulp stop"
+    "fullDeploy": "node deployer.js fullDeploy",
+    "upload": "node deployer.js upload",
+    "start": "node deployer.js start",
+    "modules": "node deployer.js modules",
+    "stop": "node deployer.js stop",
+    "setup": "node deployer.js setup"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "q": "^1.4.1",
-    "ssh2": "^0.5.0"
+    "ssh2": "^0.5.0",
+    "ssh2-sftp-client": "^2.5.0"
   },
   "dependencies": {
     "onoff": "^1.0.4"

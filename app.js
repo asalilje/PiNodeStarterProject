@@ -1,13 +1,10 @@
 "use strict";
-const GPIO = require('onoff').Gpio;
+const GPIO = require("onoff").Gpio;
 
-function exit() {
-    process.exit();
-}
+console.log("code goes here");
 
-process.on('SIGINT', exit);
+process.on("SIGINT", () => {
+  process.exit();
+});
 
-
-
-
-
+// Code goes here.
